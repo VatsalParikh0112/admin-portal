@@ -1,0 +1,48 @@
+<div
+  class="flex min-h-screen items-center justify-center bg-linear-to-br from-emerald-900 via-emerald-950 to-black p-4">
+  <div
+    class="mx-auto w-full max-w-sm rounded-3xl border border-white/10 bg-emerald-950 p-8 text-white shadow-2xl">
+    <div class="mb-8 text-center">
+      <div class="mb-3 flex items-center justify-center gap-2">
+        <app-white-find-pharma-logo class="flex size-9" />
+        <span class="text-2xl font-extrabold text-emerald-300">FindMy Pharma</span>
+      </div>
+      <p class="text-sm text-white/50">Admin console</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-5 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-200">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-white/80">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" />
+        @if (control('email').touched && control('email').invalid) {
+          <p class="mt-1 text-xs text-red-300">Enter a valid email.</p>
+        }
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-white/80">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/40" />
+        @if (control('password').touched && control('password').invalid) {
+          <p class="mt-1 text-xs text-red-300">Password is required.</p>
+        }
+      </div>
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="w-full cursor-pointer rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</div>

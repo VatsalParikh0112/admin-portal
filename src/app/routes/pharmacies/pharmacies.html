@@ -1,0 +1,90 @@
+<div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+  <h1 class="text-xl font-bold text-gray-900">Pharmacies</h1>
+  <p class="mt-1 text-sm text-gray-500">
+    Manage verified pharmacies. Warn or disable accounts (e.g. for non-payment). All plans are free
+    for now.
+  </p>
+
+  <input
+    type="text"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    placeholder="Search by name, email or city…"
+    class="mb-6 mt-6 w-full max-w-sm rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+
+  @if (loading()) {
+    <p class="text-sm text-gray-500">Loading…</p>
+  } @else if (filtered().length === 0) {
+    <div class="rounded-2xl border border-gray-200 bg-white p-10 text-center text-gray-400 shadow-sm">
+      No pharmacies found.
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @for (p of filtered(); track p._id) {
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-semibold text-gray-900">{{ p.name }}</h2>
+                <span
+                  class="rounded-full px-2 py-0.5 text-xs font-medium capitalize"
+                  [class]="statusBadge(p)">
+                  {{ p.accountStatus || 'active' }}
+                </span>
+                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+                  {{ p.plan || 'free' }}
+                </span>
+              </div>
+              <p class="mt-1 text-sm text-gray-500">{{ fullAddress(p) }}</p>
+              <div class="mt-1 text-sm text-gray-500">{{ p.email }} · {{ p.phone }}</div>
+
+              @if (p.disabledReason) {
+                <p class="mt-2 text-sm text-red-500">Disabled: {{ p.disabledReason }}</p>
+              }
+
+              @if (p.warnings && p.warnings.length) {
+                <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                  <p class="mb-1 text-xs font-semibold text-amber-700">
+                    {{ p.warnings.length }} warning(s)
+                  </p>
+                  <ul class="space-y-1 text-xs text-gray-600">
+                    @for (w of p.warnings; track w.at) {
+                      <li>• {{ w.message }} <span class="text-gray-400">({{ w.at | date: 'mediumDate' }})</span></li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+
+            <div class="flex shrink-0 gap-2">
+              <button
+                type="button"
+                (click)="warn(p)"
+                [disabled]="actingId() === p._id"
+                class="cursor-pointer rounded-lg border border-amber-300 px-3 py-2 text-sm font-semibold text-amber-600 transition hover:bg-amber-50 disabled:opacity-60">
+                Warn
+              </button>
+              @if (p.accountStatus === 'disabled') {
+                <button
+                  type="button"
+                  (click)="enable(p)"
+                  [disabled]="actingId() === p._id"
+                  class="cursor-pointer rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-60">
+                  Reactivate
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  (click)="disable(p)"
+                  [disabled]="actingId() === p._id"
+                  class="cursor-pointer rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-50 disabled:opacity-60">
+                  Disable
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

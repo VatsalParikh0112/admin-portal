@@ -1,0 +1,141 @@
+<div class="flex min-h-screen bg-gray-50 text-gray-900">
+  <!-- Mobile overlay -->
+  @if (sidebarOpen()) {
+    <div
+      (click)="closeSidebar()"
+      class="fixed inset-0 z-30 bg-black/40 lg:hidden"
+      aria-hidden="true"></div>
+  }
+
+  <!-- Sidebar: off-canvas on mobile, static on desktop -->
+  <aside
+    class="fixed inset-0 z-40 flex w-full flex-col border-gray-200 bg-white transition-transform duration-300 lg:static lg:inset-y-0 lg:z-auto lg:order-first lg:w-60 lg:translate-x-0 lg:border-r"
+    [class.translate-x-0]="sidebarOpen()"
+    [class.translate-x-full]="!sidebarOpen()">
+    <div class="flex items-center justify-between px-6 py-5">
+      <div class="flex items-center gap-2">
+        <app-find-pharma-logo class="flex size-8" />
+        <div>
+          <h1 class="text-base font-extrabold text-emerald-600">FindMy Pharma</h1>
+          <p class="text-xs text-gray-400">Admin console</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="closeSidebar()"
+        class="cursor-pointer rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
+        aria-label="Close menu">
+        <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <nav class="flex-1 space-y-1 px-3">
+      <a
+        routerLink="/verification"
+        routerLinkActive="bg-emerald-50 text-emerald-700"
+        (click)="closeSidebar()"
+        class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+        <span>Verification</span>
+        @if (stats()?.pendingVerifications) {
+          <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+            {{ stats()?.pendingVerifications }}
+          </span>
+        }
+      </a>
+      <a
+        routerLink="/pharmacies"
+        routerLinkActive="bg-emerald-50 text-emerald-700"
+        (click)="closeSidebar()"
+        class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+        <span>Pharmacies</span>
+        <span class="text-xs text-gray-400">{{ stats()?.totalPharmacies ?? '' }}</span>
+      </a>
+      <a
+        routerLink="/support"
+        routerLinkActive="bg-emerald-50 text-emerald-700"
+        (click)="closeSidebar()"
+        class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+        <span>Support</span>
+        @if (stats()?.openTickets) {
+          <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+            {{ stats()?.openTickets }}
+          </span>
+        }
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      (click)="askLogout()"
+      class="m-3 cursor-pointer rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+      Log out
+    </button>
+  </aside>
+
+  <!-- Content -->
+  <div class="flex min-w-0 flex-1 flex-col">
+    <!-- Mobile top bar: logo on the left, menu button on the right -->
+    <header
+      class="sticky top-0 z-20 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 lg:hidden">
+      <div class="flex items-center gap-2">
+        <app-find-pharma-logo class="flex size-7" />
+        <span class="text-base font-extrabold text-emerald-600">FindMy Pharma</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- Logout (green, mirrors the patient portal's primary action button) -->
+        <button
+          type="button"
+          (click)="askLogout()"
+          aria-label="Logout"
+          class="flex cursor-pointer items-center justify-center rounded-lg border border-emerald-500 bg-emerald-500 p-2 text-white transition hover:bg-emerald-400">
+          <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          (click)="toggleSidebar()"
+          class="cursor-pointer rounded-lg p-1.5 text-gray-600 hover:bg-gray-100"
+          aria-label="Open menu">
+          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="min-w-0 flex-1 overflow-x-hidden">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- Logout confirmation dialog -->
+  @if (confirmLogoutOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="logout-title">
+      <div class="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">
+        <h2 id="logout-title" class="text-lg font-bold text-gray-900">Log out?</h2>
+        <p class="mt-2 text-sm text-gray-500">Are you sure you want to log out of the admin console?</p>
+        <div class="mt-6 flex gap-3">
+          <button
+            type="button"
+            (click)="cancelLogout()"
+            class="flex-1 cursor-pointer rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100">
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="logout()"
+            class="flex-1 cursor-pointer rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-400">
+            Log out
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
