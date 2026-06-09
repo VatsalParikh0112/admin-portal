@@ -1,6 +1,6 @@
 <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
-  <h1 class="text-xl font-bold text-gray-900">Pharmacies</h1>
-  <p class="mt-1 text-sm text-gray-500">
+  <h1 class="text-xl font-bold text-neutral-900">Pharmacies</h1>
+  <p class="mt-1 text-sm text-neutral-500">
     Manage verified pharmacies. Warn or disable accounts (e.g. for non-payment). All plans are free
     for now.
   </p>
@@ -10,33 +10,33 @@
     [ngModel]="search()"
     (ngModelChange)="search.set($event)"
     placeholder="Search by name, email or city…"
-    class="mb-6 mt-6 w-full max-w-sm rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+    class="mb-6 mt-6 w-full max-w-sm rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-200" />
 
   @if (loading()) {
-    <p class="text-sm text-gray-500">Loading…</p>
+    <p class="text-sm text-neutral-500">Loading…</p>
   } @else if (filtered().length === 0) {
-    <div class="rounded-2xl border border-gray-200 bg-white p-10 text-center text-gray-400 shadow-sm">
+    <div class="rounded-2xl border border-neutral-200 bg-white p-10 text-center text-neutral-400 shadow-sm">
       No pharmacies found.
     </div>
   } @else {
     <div class="space-y-4">
       @for (p of filtered(); track p._id) {
-        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div class="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <h2 class="text-base font-semibold text-gray-900">{{ p.name }}</h2>
+                <h2 class="text-base font-semibold text-neutral-900">{{ p.name }}</h2>
                 <span
                   class="rounded-full px-2 py-0.5 text-xs font-medium capitalize"
                   [class]="statusBadge(p)">
                   {{ p.accountStatus || 'active' }}
                 </span>
-                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+                <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-500">
                   {{ p.plan || 'free' }}
                 </span>
               </div>
-              <p class="mt-1 text-sm text-gray-500">{{ fullAddress(p) }}</p>
-              <div class="mt-1 text-sm text-gray-500">{{ p.email }} · {{ p.phone }}</div>
+              <p class="mt-1 text-sm text-neutral-500">{{ fullAddress(p) }}</p>
+              <div class="mt-1 text-sm text-neutral-500">{{ p.email }} · {{ p.phone }}</div>
 
               @if (p.disabledReason) {
                 <p class="mt-2 text-sm text-red-500">Disabled: {{ p.disabledReason }}</p>
@@ -47,9 +47,9 @@
                   <p class="mb-1 text-xs font-semibold text-amber-700">
                     {{ p.warnings.length }} warning(s)
                   </p>
-                  <ul class="space-y-1 text-xs text-gray-600">
+                  <ul class="space-y-1 text-xs text-neutral-600">
                     @for (w of p.warnings; track w.at) {
-                      <li>• {{ w.message }} <span class="text-gray-400">({{ w.at | date: 'mediumDate' }})</span></li>
+                      <li>• {{ w.message }} <span class="text-neutral-400">({{ w.at | date: 'mediumDate' }})</span></li>
                     }
                   </ul>
                 </div>
